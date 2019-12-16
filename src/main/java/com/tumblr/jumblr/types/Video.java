@@ -20,6 +20,12 @@ public class Video extends SourceInterface {
     String type;
     String filename;
 
+
+    public Video(String embed_code, Integer width) {
+        this.embed_code = embed_code;
+        this.width = width;
+    }
+
     /**
      * Get the width of this video
      * @return width
@@ -53,7 +59,7 @@ public class Video extends SourceInterface {
                     urlObj = new URL(tmpSrc);
                     filename = FilenameUtils.getName(urlObj.getPath());
                 }
-                filename += "." + type.substring(type.lastIndexOf("/") + 1);
+                //filename += "." + type.substring(type.lastIndexOf("/") + 1);
                 
             } catch (MalformedURLException ex) {
                 Logger.getLogger(PhotoSize.class.getName()).log(Level.SEVERE, null, ex);

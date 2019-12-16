@@ -2,7 +2,6 @@ package com.tumblr.jumblr.request;
 
 import com.tumblr.jumblr.JumblrClient;
 import com.tumblr.jumblr.exceptions.JumblrException;
-import com.tumblr.jumblr.responses.ResponseWrapper;
 import java.util.HashMap;
 import java.util.Map;
 import static org.junit.Assert.*;
@@ -35,7 +34,7 @@ public class RequestBuilderTest {
         when(r.getBody()).thenReturn("");
 
         thrown.expect(JumblrException.class);
-        ResponseWrapper got = rb.clear(r);
+        rb.clear(r);
     }
 
     @Test

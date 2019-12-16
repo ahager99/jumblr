@@ -15,6 +15,13 @@
  */
 package com.tumblr.jumblr.types;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 /**
  *
@@ -24,4 +31,29 @@ public abstract class SourceInterface {
        
     public abstract String getSrc();
     public abstract String getFileName();
+
+    public static List<SourceInterface> parseFigures(String html) {
+
+        List<SourceInterface> retVal = new ArrayList<SourceInterface>();
+        
+        Document doc = Jsoup.parse(html);
+        for (Element fig : doc.getElementsByTag("figure")) {
+            // Fetch all images
+            for (Element img : fig.getElementsByTag("img")) {
+                String url = img.attr("src");
+                Integer height = Integer.valueOf(img.attr("data-orig-height"));
+                Integer width = Integer.valueOf(img.attr("data-orig-width"));
+                retVal.add(new PhotoSize(url, height, width));
+            }
+            // Fetch all videos
+            Elements videos = fig.getElementsByTag("video");
+            if (!videos.isEmpty()) {
+                Integer width = Integer.valueOf(fig.attr("data-orig-width"));
+                String embed_code = videos.first().html();
+                retVal.add(new Video(embed_code, width));
+            }
+        }
+        
+        return retVal;
+    }
 }

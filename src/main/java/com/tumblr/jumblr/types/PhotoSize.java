@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FilenameUtils;
+import org.jsoup.nodes.Element;
 
 /**
  * This class represents a photo at a given size
@@ -15,6 +16,13 @@ public class PhotoSize extends SourceInterface {
     private int width, height;
     private String url;
     private String filename;
+
+
+    public PhotoSize(String url, Integer height, Integer width) {
+        this.url = url;
+        this.height = height;
+        this.width = width;
+    }
 
     /**
      * Get the URL of this photo at this size

@@ -1,9 +1,17 @@
 package com.tumblr.jumblr.types;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 /**
  * This class represents a post of type "text"
+ * 
  * @author jc
  */
 public class TextPost extends SafePost {
@@ -13,6 +21,7 @@ public class TextPost extends SafePost {
 
     /**
      * Get the title of this post
+     * 
      * @return the title
      */
     public String getTitle() {
@@ -21,6 +30,7 @@ public class TextPost extends SafePost {
 
     /**
      * Get the body of this post
+     * 
      * @return the body
      */
     public String getBody() {
@@ -29,6 +39,7 @@ public class TextPost extends SafePost {
 
     /**
      * Set the title of this post
+     * 
      * @param title the title
      */
     public void setTitle(String title) {
@@ -37,6 +48,7 @@ public class TextPost extends SafePost {
 
     /**
      * Set the body of this post
+     * 
      * @param body the body
      */
     public void setBody(String body) {
@@ -50,6 +62,7 @@ public class TextPost extends SafePost {
 
     /**
      * Get the details of this post (and the base details)
+     * 
      * @return the details
      */
     @Override
@@ -59,5 +72,4 @@ public class TextPost extends SafePost {
         map.put("body", this.body);
         return map;
     }
-
 }
