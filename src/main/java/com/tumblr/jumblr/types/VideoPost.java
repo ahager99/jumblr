@@ -1,8 +1,11 @@
 package com.tumblr.jumblr.types;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import com.tumblr.jumblr.download.DownloadItem;
 
 /**
  * This class represents a post of type "video"
@@ -115,5 +118,33 @@ public class VideoPost extends Post {
         details.put("data", data);
         return details;
     }
+
+
+        // No figures known for video post
+        @Override
+        protected String getFiguresHtml() {
+            return getCaption();
+        }
+    
+        // Get video with highest resolution
+        @Override
+        public List<DownloadItem> getDownloadItems() {
+            List<DownloadItem> retVal = new ArrayList<DownloadItem>();
+
+            Integer maxWidth = null;
+            Video maxVideo = null;
+            for(Video video : getVideos()) {                   
+                if (maxWidth == null || maxVideo.getWidth() < video.getWidth()) {
+                    maxWidth = video.getWidth();
+                    maxVideo = video;
+                }
+            }
+            if (maxVideo != null) {
+                retVal.addAll(maxVideo.getDownloadItems());
+            }
+
+            retVal.addAll(super.getDownloadItems());
+            return retVal;
+        }
 
 }

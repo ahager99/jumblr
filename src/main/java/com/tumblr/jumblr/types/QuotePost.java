@@ -60,4 +60,9 @@ public class QuotePost extends SafePost {
         return map;
     }
 
+    // Source contains figures information
+    @Override
+    protected String getFiguresHtml() {
+        return getSource();
+    }
 }

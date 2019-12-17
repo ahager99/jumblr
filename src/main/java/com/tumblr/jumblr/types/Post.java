@@ -9,28 +9,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+
+import com.tumblr.jumblr.download.DownloadInterface;
+import com.tumblr.jumblr.download.DownloadItem;
+
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 /**
  * This class is the base of all post types on Tumblr
+ * 
  * @author jc
  */
-public class Post extends Resource {
+public class Post extends Resource implements DownloadInterface {
 
     /**
      * Enum of valid post types.
      */
     public enum PostType {
-        TEXT("text"),
-        PHOTO("photo"),
-        QUOTE("quote"),
-        LINK("link"),
-        CHAT("chat"),
-        AUDIO("audio"),
-        VIDEO("video"),
-        ANSWER("answer"),
-        POSTCARD("postcard"),
-        UNKNOWN("unknown");
+        TEXT("text"), PHOTO("photo"), QUOTE("quote"), LINK("link"), CHAT("chat"), AUDIO("audio"), VIDEO("video"),
+        ANSWER("answer"), POSTCARD("postcard"), UNKNOWN("unknown");
 
         private final String mType;
 
@@ -68,6 +69,7 @@ public class Post extends Resource {
 
     /**
      * Get the id of the author of the post
+     * 
      * @return possibly null author id
      */
     public String getAuthorId() {
@@ -76,6 +78,7 @@ public class Post extends Resource {
 
     /**
      * Get whether or not this post is liked
+     * 
      * @return boolean
      */
     public Boolean isLiked() {
@@ -84,6 +87,7 @@ public class Post extends Resource {
 
     /**
      * Get the source title for this post
+     * 
      * @return source title
      */
     public String getSourceTitle() {
@@ -92,6 +96,7 @@ public class Post extends Resource {
 
     /**
      * Get the source URL for this post
+     * 
      * @return source URL
      */
     public String getSourceUrl() {
@@ -100,6 +105,7 @@ public class Post extends Resource {
 
     /**
      * Get whether or not this post was from mobile
+     * 
      * @return boolean
      */
     public Boolean isMobile() {
@@ -108,6 +114,7 @@ public class Post extends Resource {
 
     /**
      * Get whether or not this post was from the bookmarklet
+     * 
      * @return boolean
      */
     public Boolean isBookmarklet() {
@@ -116,6 +123,7 @@ public class Post extends Resource {
 
     /**
      * Get the format for this post
+     * 
      * @return the format
      */
     public String getFormat() {
@@ -124,7 +132,9 @@ public class Post extends Resource {
 
     /**
      * Get the current state for this post
-     * @return the state; if set, one of `published`, `queued`, `draft`, or `private`
+     * 
+     * @return the state; if set, one of `published`, `queued`, `draft`, or
+     *         `private`
      */
     public String getState() {
         return state;
@@ -132,6 +142,7 @@ public class Post extends Resource {
 
     /**
      * Get the post URL for this post
+     * 
      * @return the URL
      */
     public String getPostUrl() {
@@ -140,6 +151,7 @@ public class Post extends Resource {
 
     /**
      * Get the short URL for this post
+     * 
      * @return the URL
      */
     public String getShortUrl() {
@@ -148,6 +160,7 @@ public class Post extends Resource {
 
     /**
      * Get a list of the tags for this post
+     * 
      * @return the tags
      */
     public List<String> getTags() {
@@ -156,6 +169,7 @@ public class Post extends Resource {
 
     /**
      * Get the note count for this post
+     * 
      * @return the note count
      */
     public Long getNoteCount() {
@@ -164,6 +178,7 @@ public class Post extends Resource {
 
     /**
      * Get date of this post as String
+     * 
      * @return date GMT string
      */
     public String getDateGMT() {
@@ -172,6 +187,7 @@ public class Post extends Resource {
 
     /**
      * Get the timestamp of this post
+     * 
      * @return timestamp since epoch
      */
     public Long getTimestamp() {
@@ -180,12 +196,16 @@ public class Post extends Resource {
 
     /**
      * Get timestamp of when this post was liked
+     * 
      * @return the timestamp of when this post was liked
      */
-    public Long getLikedTimestamp() { return liked_timestamp; }
+    public Long getLikedTimestamp() {
+        return liked_timestamp;
+    }
 
     /**
      * Get the type of this post
+     * 
      * @return type as String
      */
     public PostType getType() {
@@ -194,6 +214,7 @@ public class Post extends Resource {
 
     /**
      * Get this post's ID
+     * 
      * @return the ID
      */
     public Long getId() {
@@ -202,6 +223,7 @@ public class Post extends Resource {
 
     /**
      * Get the blog name
+     * 
      * @return the blog name for the post
      */
     public String getBlogName() {
@@ -210,6 +232,7 @@ public class Post extends Resource {
 
     /**
      * Get the reblog key
+     * 
      * @return the reblog key
      */
     public String getReblogKey() {
@@ -218,6 +241,7 @@ public class Post extends Resource {
 
     /**
      * Get the slug
+     * 
      * @return possibly null reblog key
      */
     public String getSlug() {
@@ -226,6 +250,7 @@ public class Post extends Resource {
 
     /**
      * Get the ID of the post that this post reblogged
+     * 
      * @return the ID
      */
     public Long getRebloggedFromId() {
@@ -234,6 +259,7 @@ public class Post extends Resource {
 
     /**
      * Get name of the blog that this post reblogged
+     * 
      * @return the blog name for the post that this post reblogged
      */
     public String getRebloggedFromName() {
@@ -285,6 +311,7 @@ public class Post extends Resource {
     /**
      * Get the notes on this post. You must set "notes_info" to "true" in the
      * options map for this to work.
+     * 
      * @return a copy of the array of the notes on this post
      */
     public List<Note> getNotes() {
@@ -300,8 +327,9 @@ public class Post extends Resource {
 
     /**
      * Reblog this post
+     * 
      * @param blogName the blog name to reblog onto
-     * @param options options to reblog with (or null)
+     * @param options  options to reblog with (or null)
      * @return reblogged post
      */
     public Post reblog(String blogName, Map<String, ?> options) {
@@ -328,6 +356,7 @@ public class Post extends Resource {
 
     /**
      * Set the blog name for this post
+     * 
      * @param blogName the blog name to set
      */
     public void setBlogName(String blogName) {
@@ -336,6 +365,7 @@ public class Post extends Resource {
 
     /**
      * Set the id for this post
+     * 
      * @param id The id of the post
      */
     public void setId(long id) {
@@ -344,6 +374,7 @@ public class Post extends Resource {
 
     /**
      * Set the format
+     * 
      * @param format the format
      */
     public void setFormat(String format) {
@@ -352,6 +383,7 @@ public class Post extends Resource {
 
     /**
      * Set the slug
+     * 
      * @param slug the post url slug
      */
     public void setSlug(String slug) {
@@ -360,6 +392,7 @@ public class Post extends Resource {
 
     /**
      * Set the data as a string
+     * 
      * @param dateString the date to set
      */
     public void setDate(String dateString) {
@@ -368,6 +401,7 @@ public class Post extends Resource {
 
     /**
      * Set the date as a date
+     * 
      * @param date the date to set
      */
     public void setDate(Date date) {
@@ -378,8 +412,9 @@ public class Post extends Resource {
 
     /**
      * Set the state for this post
+     * 
      * @param state the state; one of `published`, `queued`, `draft`, or `private`.
-     *  Tumblr API defaults to `published` if not specified.
+     *              Tumblr API defaults to `published` if not specified.
      */
     public void setState(String state) {
         this.state = state;
@@ -387,6 +422,7 @@ public class Post extends Resource {
 
     /**
      * Set the tags for this post
+     * 
      * @param tags the tags
      */
     public void setTags(List<String> tags) {
@@ -395,6 +431,7 @@ public class Post extends Resource {
 
     /**
      * Add a tag
+     * 
      * @param tag the tag
      */
     public void addTag(String tag) {
@@ -406,6 +443,7 @@ public class Post extends Resource {
 
     /**
      * Remove a tag
+     * 
      * @param tag the tag
      */
     public void removeTag(String tag) {
@@ -414,6 +452,7 @@ public class Post extends Resource {
 
     /**
      * Save this post
+     * 
      * @throws IOException if a file in detail cannot be read
      */
     public void save() throws IOException {
@@ -426,6 +465,7 @@ public class Post extends Resource {
 
     /**
      * Detail for this post
+     * 
      * @return the detail
      */
     protected Map<String, Object> detail() {
@@ -441,6 +481,7 @@ public class Post extends Resource {
 
     /**
      * Get the tags as a string
+     * 
      * @return a string of CSV tags
      */
     private String getTagString() {
@@ -449,6 +490,7 @@ public class Post extends Resource {
 
     /**
      * Post toString
+     * 
      * @return a nice representation of this post
      */
     @Override
@@ -456,4 +498,34 @@ public class Post extends Resource {
         return "[" + this.getClass().getName() + " (" + blog_name + ":" + id + ")]";
     }
 
+    // For a default post no figures HTML is available. This will be overwritten by child methods
+    protected String getFiguresHtml() {
+        return "";
+    }
+
+    // Parse figures html to retrieve the download items of post text
+    @Override
+    public List<DownloadItem> getDownloadItems() {
+        List<DownloadItem> retVal = new ArrayList<DownloadItem>();
+
+        Document doc = Jsoup.parse(getFiguresHtml());
+        for (Element fig : doc.getElementsByTag("figure")) {
+            // Fetch all images
+            for (Element img : fig.getElementsByTag("img")) {
+                String url = img.attr("src");
+                Integer height = Integer.valueOf(img.attr("data-orig-height"));
+                Integer width = Integer.valueOf(img.attr("data-orig-width"));
+                retVal.addAll(new PhotoSize(url, height, width).getDownloadItems());
+            }
+            // Fetch all videos
+            Elements videos = fig.getElementsByTag("video");
+            if (!videos.isEmpty()) {
+                Integer width = Integer.valueOf(fig.attr("data-orig-width"));
+                String embed_code = videos.first().html();
+                retVal.addAll(new Video(embed_code, width).getDownloadItems());
+            }
+        }
+        
+        return retVal;
+    }
 }

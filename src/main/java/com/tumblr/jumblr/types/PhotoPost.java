@@ -1,5 +1,6 @@
 package com.tumblr.jumblr.types;
 
+import com.tumblr.jumblr.download.DownloadItem;
 import com.tumblr.jumblr.types.Photo.PhotoType;
 import java.io.File;
 import java.util.ArrayList;
@@ -140,5 +141,22 @@ public class PhotoPost extends Post {
 
         return details;
     }
+
+        // Caption contains figures information
+        @Override
+        protected String getFiguresHtml() {
+            return getCaption();
+        }
+    
+        // Get all images and figures information
+        @Override
+        public List<DownloadItem> getDownloadItems() {
+            List<DownloadItem> retVal = new ArrayList<DownloadItem>();
+            for(Photo photo : getPhotos()) {
+                retVal.addAll(photo.getOriginalSize().getDownloadItems());
+            }
+            retVal.addAll(super.getDownloadItems());
+            return retVal;
+        }
 
 }

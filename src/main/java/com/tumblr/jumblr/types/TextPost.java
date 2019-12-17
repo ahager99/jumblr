@@ -72,4 +72,12 @@ public class TextPost extends SafePost {
         map.put("body", this.body);
         return map;
     }
+
+
+    // Body contains figures information
+    @Override
+    protected String getFiguresHtml() {
+        return getBody();
+    }
+
 }
