@@ -520,7 +520,7 @@ public class Post extends Resource implements DownloadInterface {
             // Fetch all videos
             Elements videos = fig.getElementsByTag("video");
             if (!videos.isEmpty()) {
-                Integer width = Integer.valueOf(fig.attr("data-orig-width"));   // Add leading 0 to always be a number to prevent problems if attribute is empty or not found
+                Integer width = Integer.valueOf("0" + fig.attr("data-orig-width"));   // Add leading 0 to always be a number to prevent problems if attribute is empty or not found
                 String embed_code = videos.first().html();
                 retVal.addAll(new Video(embed_code, width).getDownloadItems());
             }
