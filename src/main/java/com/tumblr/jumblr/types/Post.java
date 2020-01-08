@@ -513,14 +513,14 @@ public class Post extends Resource implements DownloadInterface {
             // Fetch all images
             for (Element img : fig.getElementsByTag("img")) {
                 String url = img.attr("src");
-                Integer height = Integer.valueOf(img.attr("data-orig-height"));
-                Integer width = Integer.valueOf(img.attr("data-orig-width"));
+                Integer height = Integer.valueOf("0" + img.attr("data-orig-height")); // Add leading 0 to always be a number to prevent problems if attribute is empty or not found
+                Integer width = Integer.valueOf("0" + img.attr("data-orig-width"));   // see above
                 retVal.addAll(new PhotoSize(url, height, width).getDownloadItems());
             }
             // Fetch all videos
             Elements videos = fig.getElementsByTag("video");
             if (!videos.isEmpty()) {
-                Integer width = Integer.valueOf(fig.attr("data-orig-width"));
+                Integer width = Integer.valueOf(fig.attr("data-orig-width"));   // Add leading 0 to always be a number to prevent problems if attribute is empty or not found
                 String embed_code = videos.first().html();
                 retVal.addAll(new Video(embed_code, width).getDownloadItems());
             }
